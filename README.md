@@ -62,7 +62,3 @@ The code is optimized and scalable working with spark dataframe. After words exp
   
 If we don't have sufficient memory, we have some walkarounds. One version could be to process one document at a time. Duplicated words and special characters are removed so that individual size is significantly smaller. Then individual outputs can be reduced into one.  
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 8f2554c15c0408da750f79508ad23491be6e73bf
