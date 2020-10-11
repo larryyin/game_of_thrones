@@ -1,0 +1,101 @@
+﻿{
+  "paragraphs": [
+    {
+      "text": "val dataPathRoot = \"file:///data/\"\nval dataPath = dataPathRoot+\"dataset/*\"\nval df = spark.sparkContext.wholeTextFiles(dataPath).toDF\nval output = df\n.select((substring_index(col(\"_1\"), \"/\", -1)).cast(\"Int\").alias(\"docId\"), explode(split((regexp_replace(col(\"_2\"), \"[^a-zA-Z\\\\s]\", \"\")),\"\\\\s+\")).alias(\"w\"))\n.select(col(\"docId\"), (lower(regexp_replace(col(\"w\"),\"^[^a-zA-Z]+\",\"\"))).alias(\"w\"))\n.filter(!(col(\"w\")===\"\" || col(\"w\").contains(\"--\") || col(\"w\")===\"-\"))\n.groupBy(\"w\").agg(concat_ws(\" \",sort_array(collect_set(\"docId\"))).alias(\"docList\"))\n.orderBy(\"w\")\n.repartition(1)\noutput.write.mode(\"overwrite\").option(\"header\",\"false\").csv(dataRootPath+\"output\")",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-11T06:28:38+0000",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "\u001b[1m\u001b[34mdataPathRoot\u001b[0m: \u001b[1m\u001b[32mString\u001b[0m = file:///data/\n\u001b[1m\u001b[34mdataPath\u001b[0m: \u001b[1m\u001b[32mString\u001b[0m = file:///data/dataset/*\n\u001b[1m\u001b[34mdf\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.DataFrame\u001b[0m = [_1: string, _2: string]\n\u001b[1m\u001b[34moutput\u001b[0m: \u001b[1m\u001b[32morg.apache.spark.sql.Dataset[org.apache.spark.sql.Row]\u001b[0m = [w: string, docList: string]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602395699705_-1435189430",
+      "id": "paragraph_1602356060652_-357909338",
+      "dateCreated": "2020-10-11T05:54:59+0000",
+      "dateStarted": "2020-10-11T06:28:38+0000",
+      "dateFinished": "2020-10-11T06:29:04+0000",
+      "status": "FINISHED",
+      "focus": true,
+      "$$hashKey": "object:220"
+    },
+    {
+      "text": "output.explain(true)",
+      "user": "anonymous",
+      "dateUpdated": "2020-10-11T06:23:05+0000",
+      "config": {
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/scala",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "== Parsed Logical Plan ==\nRepartition 1, true\n+- Sort [w#37091 ASC NULLS FIRST], true\n   +- Aggregate [w#37091], [w#37091, concat_ws( , cast(sort_array(collect_set(docId#37086, 0, 0), true) as array<string>)) AS docList#37097]\n      +- Filter NOT (((w#37091 = ) || Contains(w#37091, --)) || (w#37091 = -))\n         +- Project [docId#37086, lower(regexp_replace(w#37088, ^[^a-zA-Z]+, )) AS w#37091]\n            +- Project [cast(substring_index(_1#37081, /, -1) as int) AS docId#37086, w#37088]\n               +- Generate explode(split(regexp_replace(_2#37082, [^a-zA-Z\\s], ), \\s+)), false, [w#37088]\n                  +- SerializeFromObject [staticinvoke(class org.apache.spark.unsafe.types.UTF8String, StringType, fromString, assertnotnull(assertnotnull(input[0, scala.Tuple2, true]))._1, true, false) AS _1#37081, staticinvoke(class org.apache.spark.unsafe.types.UTF8String, StringType, fromString, assertnotnull(assertnotnull(input[0, scala.Tuple2, true]))._2, true, false) AS _2#37082]\n                     +- ExternalRDD [obj#37080]\n\n== Analyzed Logical Plan ==\nw: string, docList: string\nRepartition 1, true\n+- Sort [w#37091 ASC NULLS FIRST], true\n   +- Aggregate [w#37091], [w#37091, concat_ws( , cast(sort_array(collect_set(docId#37086, 0, 0), true) as array<string>)) AS docList#37097]\n      +- Filter NOT (((w#37091 = ) || Contains(w#37091, --)) || (w#37091 = -))\n         +- Project [docId#37086, lower(regexp_replace(w#37088, ^[^a-zA-Z]+, )) AS w#37091]\n            +- Project [cast(substring_index(_1#37081, /, -1) as int) AS docId#37086, w#37088]\n               +- Generate explode(split(regexp_replace(_2#37082, [^a-zA-Z\\s], ), \\s+)), false, [w#37088]\n                  +- SerializeFromObject [staticinvoke(class org.apache.spark.unsafe.types.UTF8String, StringType, fromString, assertnotnull(assertnotnull(input[0, scala.Tuple2, true]))._1, true, false) AS _1#37081, staticinvoke(class org.apache.spark.unsafe.types.UTF8String, StringType, fromString, assertnotnull(assertnotnull(input[0, scala.Tuple2, true]))._2, true, false) AS _2#37082]\n                     +- ExternalRDD [obj#37080]\n\n== Optimized Logical Plan ==\nRepartition 1, true\n+- Sort [w#37091 ASC NULLS FIRST], true\n   +- Aggregate [w#37091], [w#37091, concat_ws( , cast(sort_array(collect_set(docId#37086, 0, 0), true) as array<string>)) AS docList#37097]\n      +- Project [cast(substring_index(_1#37081, /, -1) as int) AS docId#37086, lower(regexp_replace(w#37088, ^[^a-zA-Z]+, )) AS w#37091]\n         +- Filter ((NOT (lower(regexp_replace(w#37088, ^[^a-zA-Z]+, )) = ) && NOT Contains(lower(regexp_replace(w#37088, ^[^a-zA-Z]+, )), --)) && NOT (lower(regexp_replace(w#37088, ^[^a-zA-Z]+, )) = -))\n            +- Generate explode(split(regexp_replace(_2#37082, [^a-zA-Z\\s], ), \\s+)), [1], false, [w#37088]\n               +- SerializeFromObject [staticinvoke(class org.apache.spark.unsafe.types.UTF8String, StringType, fromString, assertnotnull(input[0, scala.Tuple2, true])._1, true, false) AS _1#37081, staticinvoke(class org.apache.spark.unsafe.types.UTF8String, StringType, fromString, assertnotnull(input[0, scala.Tuple2, true])._2, true, false) AS _2#37082]\n                  +- ExternalRDD [obj#37080]\n\n== Physical Plan ==\nExchange RoundRobinPartitioning(1)\n+- *(3) Sort [w#37091 ASC NULLS FIRST], true, 0\n   +- Exchange rangepartitioning(w#37091 ASC NULLS FIRST, 200)\n      +- ObjectHashAggregate(keys=[w#37091], functions=[collect_set(docId#37086, 0, 0)], output=[w#37091, docList#37097])\n         +- Exchange hashpartitioning(w#37091, 200)\n            +- ObjectHashAggregate(keys=[w#37091], functions=[partial_collect_set(docId#37086, 0, 0)], output=[w#37091, buf#37103])\n               +- *(2) Project [cast(substring_index(_1#37081, /, -1) as int) AS docId#37086, lower(regexp_replace(w#37088, ^[^a-zA-Z]+, )) AS w#37091]\n                  +- *(2) Filter ((NOT (lower(regexp_replace(w#37088, ^[^a-zA-Z]+, )) = ) && NOT Contains(lower(regexp_replace(w#37088, ^[^a-zA-Z]+, )), --)) && NOT (lower(regexp_replace(w#37088, ^[^a-zA-Z]+, )) = -))\n                     +- Generate explode(split(regexp_replace(_2#37082, [^a-zA-Z\\s], ), \\s+)), [_1#37081], false, [w#37088]\n                        +- *(1) SerializeFromObject [staticinvoke(class org.apache.spark.unsafe.types.UTF8String, StringType, fromString, assertnotnull(input[0, scala.Tuple2, true])._1, true, false) AS _1#37081, staticinvoke(class org.apache.spark.unsafe.types.UTF8String, StringType, fromString, assertnotnull(input[0, scala.Tuple2, true])._2, true, false) AS _2#37082]\n                           +- Scan file:///data/dataset/*[obj#37080]\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1602395699705_-1875026676",
+      "id": "paragraph_1602358047477_2053527356",
+      "dateCreated": "2020-10-11T05:54:59+0000",
+      "dateStarted": "2020-10-11T06:23:05+0000",
+      "dateFinished": "2020-10-11T06:23:05+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:221"
+    }
+  ],
+  "name": "question2",
+  "id": "2FQ9D4TU4",
+  "defaultInterpreterGroup": "spark",
+  "version": "0.9.0-preview1",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false,
+    "looknfeel": "default",
+    "personalizedMode": "false"
+  },
+  "info": {},
+  "path": "/question2"
+}
