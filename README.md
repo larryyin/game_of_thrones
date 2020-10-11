@@ -8,7 +8,7 @@ The best way to replicate the environment is to use Zeppelin docker which has no
 docker run -p 8080:8080 --rm -v $PWD/notebook:/notebook -v $PWD/data:/data -e ZEPPELIN_NOTEBOOK_DIR='/notebook' --name zeppelin apache/zeppelin:0.9.0
 4. In your web browser, go to http://localhost:8080
 5. See if there is an exisitng notebook "question2" under the Filter box. If not,  
-"Import note" -> "Select JSON File/IPYNB File" -> "{yourPath}/notebook/question2_2FMUNW2HK.zpln".  
+"Import note" -> "Select JSON File/IPYNB File" -> "{yourPath}/question2.zpln".  
 Open notebook "question2".
 6. In the notebook, run the first box to get the output. You can view the output at    
 {yourPath}/data/output/  
