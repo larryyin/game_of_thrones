@@ -16,7 +16,7 @@ Open notebook "question2".
 ### Check output
 If you would like to see the output directly just go to {yourPath}/data/output/, where it is already generated.  
 Alternatively, you can view it online:  
-https://github.com/larryyin/game_of_thrones/blob/main/data/output/part-00000-f4c5d70a-5ce1-4420-8530-87913674fe14-c000.csv
+https://raw.githubusercontent.com/larryyin/game_of_thrones/main/data/output/part-00000-07d80175-58c7-4eea-8602-432392560dcf-c000.csv  
 
 ## Code explanation
 // Set data root path  
